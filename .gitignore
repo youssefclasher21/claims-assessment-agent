@@ -218,3 +218,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Project-specific (claims-assessment-agent) ---
+.env
+.venv/
+*.db
+*.sqlite
+*.sqlite3
+sessions.db
+.pytest_cache/
+.vscode/
