@@ -1,0 +1,87 @@
+{
+  "CUST-001": [],
+  "CUST-002": [
+    {
+      "claim_id": "CLM-2002-01",
+      "date": "2026-03-12",
+      "claim_type": "health",
+      "amount": 4200,
+      "outcome": "paid"
+    }
+  ],
+  "CUST-003": [
+    {
+      "claim_id": "CLM-2003-01",
+      "date": "2024-06-02",
+      "claim_type": "property",
+      "amount": 8000,
+      "outcome": "paid"
+    },
+    {
+      "claim_id": "CLM-2003-02",
+      "date": "2025-01-18",
+      "claim_type": "property",
+      "amount": 15000,
+      "outcome": "paid"
+    },
+    {
+      "claim_id": "CLM-2003-03",
+      "date": "2025-09-30",
+      "claim_type": "property",
+      "amount": 22000,
+      "outcome": "rejected"
+    },
+    {
+      "claim_id": "CLM-2003-04",
+      "date": "2026-03-05",
+      "claim_type": "property",
+      "amount": 12000,
+      "outcome": "paid"
+    }
+  ],
+  "CUST-004": [
+    {
+      "claim_id": "CLM-2004-01",
+      "date": "2025-07-21",
+      "claim_type": "travel",
+      "amount": 3500,
+      "outcome": "paid"
+    }
+  ],
+  "CUST-005": [],
+  "CUST-006": [
+    {
+      "claim_id": "CLM-2006-01",
+      "date": "2025-11-09",
+      "claim_type": "property",
+      "amount": 6000,
+      "outcome": "paid"
+    }
+  ],
+  "CUST-007": [
+    {
+      "claim_id": "CLM-2007-01",
+      "date": "2026-06-14",
+      "claim_type": "travel",
+      "amount": 5200,
+      "outcome": "paid"
+    }
+  ],
+  "CUST-008": [],
+  "CUST-009": [
+    {
+      "claim_id": "CLM-2009-01",
+      "date": "2025-05-03",
+      "claim_type": "auto",
+      "amount": 9000,
+      "outcome": "paid"
+    },
+    {
+      "claim_id": "CLM-2009-02",
+      "date": "2026-02-20",
+      "claim_type": "auto",
+      "amount": 11000,
+      "outcome": "paid"
+    }
+  ]
+}

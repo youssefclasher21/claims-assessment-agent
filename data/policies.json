@@ -1,0 +1,186 @@
+[
+  {
+    "policy_id": "POL-1001",
+    "customer_id": "CUST-001",
+    "policy_type": "auto_comprehensive",
+    "status": "active",
+    "start_date": "2026-01-01",
+    "end_date": "2026-12-31",
+    "coverages": {
+      "auto": {
+        "covered": true,
+        "limit_amount": 300000,
+        "deductible": 2500,
+        "exclusions": [
+          "intentional damage",
+          "racing or speed contests",
+          "driving under the influence",
+          "unlicensed driver"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1002",
+    "customer_id": "CUST-002",
+    "policy_type": "health_standard",
+    "status": "active",
+    "start_date": "2026-02-01",
+    "end_date": "2027-01-31",
+    "coverages": {
+      "health": {
+        "covered": true,
+        "limit_amount": 150000,
+        "deductible": 1000,
+        "exclusions": [
+          "cosmetic procedures",
+          "pre-existing conditions not declared",
+          "experimental treatment"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1003",
+    "customer_id": "CUST-003",
+    "policy_type": "property_home",
+    "status": "active",
+    "start_date": "2026-01-15",
+    "end_date": "2027-01-14",
+    "coverages": {
+      "property": {
+        "covered": true,
+        "limit_amount": 500000,
+        "deductible": 5000,
+        "exclusions": [
+          "intentional damage",
+          "wear and tear",
+          "war and civil unrest"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1004",
+    "customer_id": "CUST-004",
+    "policy_type": "travel_single_trip",
+    "status": "expired",
+    "start_date": "2025-01-01",
+    "end_date": "2025-12-31",
+    "coverages": {
+      "travel": {
+        "covered": true,
+        "limit_amount": 60000,
+        "deductible": 500,
+        "exclusions": [
+          "travel against official warnings",
+          "pre-existing conditions not declared",
+          "high-risk sports"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1005",
+    "customer_id": "CUST-005",
+    "policy_type": "auto_third_party",
+    "status": "active",
+    "start_date": "2026-03-01",
+    "end_date": "2027-02-28",
+    "coverages": {
+      "auto": {
+        "covered": true,
+        "limit_amount": 120000,
+        "deductible": 3000,
+        "exclusions": [
+          "intentional damage",
+          "racing or speed contests",
+          "driving under the influence",
+          "unlicensed driver"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1006",
+    "customer_id": "CUST-006",
+    "policy_type": "property_home",
+    "status": "active",
+    "start_date": "2026-04-01",
+    "end_date": "2027-03-31",
+    "coverages": {
+      "property": {
+        "covered": true,
+        "limit_amount": 400000,
+        "deductible": 4000,
+        "exclusions": [
+          "intentional damage",
+          "wear and tear",
+          "war and civil unrest",
+          "flood damage"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1007",
+    "customer_id": "CUST-007",
+    "policy_type": "travel_annual",
+    "status": "active",
+    "start_date": "2026-05-01",
+    "end_date": "2027-04-30",
+    "coverages": {
+      "travel": {
+        "covered": true,
+        "limit_amount": 80000,
+        "deductible": 750,
+        "exclusions": [
+          "travel against official warnings",
+          "pre-existing conditions not declared",
+          "high-risk sports"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1008",
+    "customer_id": "CUST-008",
+    "policy_type": "health_premium",
+    "status": "active",
+    "start_date": "2026-01-01",
+    "end_date": "2026-12-31",
+    "coverages": {
+      "health": {
+        "covered": true,
+        "limit_amount": 300000,
+        "deductible": 0,
+        "exclusions": [
+          "cosmetic procedures",
+          "pre-existing conditions not declared",
+          "experimental treatment"
+        ]
+      }
+    }
+  },
+  {
+    "policy_id": "POL-1009",
+    "customer_id": "CUST-009",
+    "policy_type": "auto_comprehensive",
+    "status": "active",
+    "start_date": "2026-01-10",
+    "end_date": "2027-01-09",
+    "coverages": {
+      "auto": {
+        "covered": true,
+        "limit_amount": 250000,
+        "deductible": 2000,
+        "exclusions": [
+          "intentional damage",
+          "racing or speed contests",
+          "driving under the influence",
+          "unlicensed driver"
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,123 @@
+{
+  "auto": [
+    {
+      "name": "police_report",
+      "aliases": [
+        "police",
+        "accident_report"
+      ]
+    },
+    {
+      "name": "repair_estimate",
+      "aliases": [
+        "estimate",
+        "repair_quote",
+        "garage_quote"
+      ]
+    },
+    {
+      "name": "photos_of_damage",
+      "aliases": [
+        "photo",
+        "damage_photo",
+        "damage_pic"
+      ]
+    },
+    {
+      "name": "driver_license",
+      "aliases": [
+        "license",
+        "licence",
+        "driving_license"
+      ]
+    }
+  ],
+  "health": [
+    {
+      "name": "medical_report",
+      "aliases": [
+        "medical",
+        "doctor_report",
+        "diagnosis"
+      ]
+    },
+    {
+      "name": "hospital_invoice",
+      "aliases": [
+        "invoice",
+        "hospital_bill",
+        "bill"
+      ]
+    },
+    {
+      "name": "prescription",
+      "aliases": [
+        "prescription"
+      ]
+    }
+  ],
+  "property": [
+    {
+      "name": "photos_of_damage",
+      "aliases": [
+        "photo",
+        "damage_photo",
+        "damage_pic"
+      ]
+    },
+    {
+      "name": "repair_estimate",
+      "aliases": [
+        "estimate",
+        "repair_quote",
+        "contractor_quote"
+      ]
+    },
+    {
+      "name": "proof_of_ownership",
+      "aliases": [
+        "ownership",
+        "title_deed",
+        "deed",
+        "sale_contract"
+      ]
+    }
+  ],
+  "travel": [
+    {
+      "name": "booking_confirmation",
+      "aliases": [
+        "booking",
+        "reservation",
+        "ticket",
+        "itinerary"
+      ]
+    },
+    {
+      "name": "incident_proof",
+      "aliases": [
+        "airline_letter",
+        "delay_certificate",
+        "incident",
+        "hospital_letter"
+      ]
+    },
+    {
+      "name": "receipts",
+      "aliases": [
+        "receipt",
+        "expense"
+      ]
+    }
+  ],
+  "other": [
+    {
+      "name": "supporting_document",
+      "aliases": [
+        "support",
+        "evidence",
+        "document"
+      ]
+    }
+  ]
+}
