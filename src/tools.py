@@ -341,6 +341,46 @@ def get_case(case_id: str) -> dict | None:
     return next((c for c in list_cases() if c["case_id"] == _norm_id(case_id)), None)
 
 
+# ------------------------------------------------------------------ human-only action (NOT an agent tool)
+HUMAN_DECISIONS = ("approved", "rejected", "needs_more_info")
+
+
+def record_human_decision(case_id: str, decision: str, adjuster: str, note: str = "") -> dict:
+    """Record the human adjuster's final decision on a case (Human-in-the-loop).
+
+    Only the UI calls this. It is never exposed to any agent, so the system itself
+    can never approve or reject a claim.
+    """
+    decision = str(decision or "").strip().lower()
+    if decision not in HUMAN_DECISIONS:
+        return _result(ToolStatus.ERROR, message=f"decision must be one of {', '.join(HUMAN_DECISIONS)}")
+    if not str(adjuster or "").strip():
+        return _result(ToolStatus.ERROR, message="adjuster name is required")
+    if decision != "approved" and not str(note or "").strip():
+        return _result(ToolStatus.ERROR, message="a note is required for reject / request more info")
+    path = _cases_path()
+    try:
+        with _CASES_LOCK:
+            cases = _load(path) if path.exists() else []
+            case = next((c for c in cases if c["case_id"] == _norm_id(case_id)), None)
+            if case is None:
+                return _result(ToolStatus.NOT_FOUND, message="no case with this id")
+            if case.get("final_decision") in ("approved", "rejected"):
+                return _result(ToolStatus.ERROR, message="this case already has a final human decision")
+            now = _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds")
+            case["final_decision"] = decision
+            case["case_status"] = "needs_more_info" if decision == "needs_more_info" else "closed_by_adjuster"
+            case["audit_trail"].append({"timestamp": now, "actor": f"human_adjuster:{adjuster.strip()}",
+                                        "event": "human_decision", "detail": f"{decision}. {note.strip()}".strip()})
+            tmp = path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(cases, indent=2, ensure_ascii=False), encoding="utf-8")
+            os.replace(tmp, path)
+    except _DataUnavailable as exc:
+        return _result(ToolStatus.UNAVAILABLE, message=f"could not verify: {exc}")
+    return _result(ToolStatus.OK, case_id=case["case_id"], final_decision=decision,
+                   message="decision recorded in the audit trail")
+
+
 # ------------------------------------------------------------------ Agents SDK wiring
 def build_agent_tools() -> dict[str, list]:
     """Wrap the five read-only tools as Agents SDK function tools, grouped per worker."""
