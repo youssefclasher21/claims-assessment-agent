@@ -1,1 +1,332 @@
-[]
+[
+  {
+    "case_id": "CASE-0001",
+    "customer_id": "CUST-001",
+    "risk_level": "routine",
+    "case_status": "pending_human_review",
+    "assessment": {
+      "summary": "Auto claim. Claimed amount: 18,000 EGP; Incident date: 2026-06-01; Policy POL-1001 is active; Claim type is listed on the policy (limit 300,000 EGP); Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only); Prior claims on record: 0; All required documents were provided.",
+      "supported_facts": [
+        "Claim type: auto",
+        "Claimed amount: 18,000 EGP",
+        "Incident date: 2026-06-01",
+        "Policy POL-1001 is active",
+        "Claim type is listed on the policy (limit 300,000 EGP)",
+        "Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only)",
+        "Prior claims on record: 0",
+        "All required documents were provided"
+      ],
+      "open_questions": [],
+      "recommended_next_step": "Adjuster to review the evidence and decide."
+    },
+    "created_at": "2026-10-17T00:24:08+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T00:24:08+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=routine"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0002",
+    "customer_id": "CUST-007",
+    "risk_level": "human_review",
+    "case_status": "needs_more_info",
+    "assessment": {
+      "summary": "Travel claim. Claimed amount: 6,000 EGP; Incident date: 2026-07-10; Policy POL-1007 is active; Claim type is listed on the policy (limit 80,000 EGP); Amount after deductible (750 EGP): 5,250 EGP (arithmetic only). Open items: 2.",
+      "supported_facts": [
+        "Claim type: travel",
+        "Claimed amount: 6,000 EGP",
+        "Incident date: 2026-07-10",
+        "Policy POL-1007 is active",
+        "Claim type is listed on the policy (limit 80,000 EGP)",
+        "Amount after deductible (750 EGP): 5,250 EGP (arithmetic only)"
+      ],
+      "open_questions": [
+        "Could not verify the claim history",
+        "Missing documents: incident_proof, receipts"
+      ],
+      "recommended_next_step": "Adjuster to review the open items and decide."
+    },
+    "created_at": "2026-10-17T00:24:52+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T00:24:52+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=needs_more_info, risk=human_review"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0003",
+    "customer_id": "CUST-007",
+    "risk_level": "human_review",
+    "case_status": "closed_by_adjuster",
+    "assessment": {
+      "summary": "Travel claim. Claimed amount: 6,000 EGP; Incident date: 2026-07-10; Policy POL-1007 is active; Claim type is listed on the policy (limit 80,000 EGP); Amount after deductible (750 EGP): 5,250 EGP (arithmetic only). Open items: 2.",
+      "supported_facts": [
+        "Claim type: travel",
+        "Claimed amount: 6,000 EGP",
+        "Incident date: 2026-07-10",
+        "Policy POL-1007 is active",
+        "Claim type is listed on the policy (limit 80,000 EGP)",
+        "Amount after deductible (750 EGP): 5,250 EGP (arithmetic only)"
+      ],
+      "open_questions": [
+        "Could not verify the claim history",
+        "Missing documents: incident_proof, receipts"
+      ],
+      "recommended_next_step": "Adjuster to review the open items and decide."
+    },
+    "created_at": "2026-10-17T00:25:00+00:00",
+    "final_decision": "approved",
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T00:25:00+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=needs_more_info, risk=human_review"
+      },
+      {
+        "timestamp": "2026-10-17T01:07:38+00:00",
+        "actor": "human_adjuster:samir hanna",
+        "event": "human_decision",
+        "detail": "approved."
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0004",
+    "customer_id": "CUST-001",
+    "risk_level": "high",
+    "case_status": "closed_by_adjuster",
+    "assessment": {
+      "route": "human_review",
+      "risk_flags": [
+        "manipulation_attempt"
+      ],
+      "reasons": [
+        "Input contained manipulation language: ['approve my claim', 'Ignore all previous instructions']"
+      ]
+    },
+    "created_at": "2026-10-17T00:26:15+00:00",
+    "final_decision": "approved",
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T00:26:15+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=high"
+      },
+      {
+        "timestamp": "2026-10-17T01:07:15+00:00",
+        "actor": "human_adjuster:samir",
+        "event": "human_decision",
+        "detail": "approved."
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0005",
+    "customer_id": "CUST-001",
+    "risk_level": "routine",
+    "case_status": "needs_more_info",
+    "assessment": {
+      "summary": "Auto claim. Claimed amount: 18,000 EGP; Incident date: 2026-06-01; Policy POL-1001 is active; Claim type is listed on the policy (limit 300,000 EGP); Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only); Prior claims on record: 0. Open items: 1.",
+      "supported_facts": [
+        "Claim type: auto",
+        "Claimed amount: 18,000 EGP",
+        "Incident date: 2026-06-01",
+        "Policy POL-1001 is active",
+        "Claim type is listed on the policy (limit 300,000 EGP)",
+        "Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only)",
+        "Prior claims on record: 0"
+      ],
+      "open_questions": [
+        "Missing documents: repair_estimate, photos_of_damage, driver_license"
+      ],
+      "recommended_next_step": "Adjuster to review the open items and decide."
+    },
+    "created_at": "2026-10-17T01:05:47+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:05:47+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=needs_more_info, risk=routine"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0006",
+    "customer_id": "CUST-001",
+    "risk_level": "high",
+    "case_status": "closed_by_adjuster",
+    "assessment": {
+      "route": "human_review",
+      "risk_flags": [
+        "manipulation_attempt"
+      ],
+      "reasons": [
+        "Input contained manipulation language: ['approve my claim', 'Ignore all previous instructions']"
+      ]
+    },
+    "created_at": "2026-10-17T01:06:32+00:00",
+    "final_decision": "approved",
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:06:32+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=high"
+      },
+      {
+        "timestamp": "2026-10-17T01:07:58+00:00",
+        "actor": "human_adjuster:samir hanna",
+        "event": "human_decision",
+        "detail": "approved."
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0007",
+    "customer_id": "CUST-001",
+    "risk_level": "routine",
+    "case_status": "pending_human_review",
+    "assessment": {
+      "summary": "Auto claim. Claimed amount: 18,000 EGP; Incident date: 2026-06-01; Policy POL-1001 is active; Claim type is listed on the policy (limit 300,000 EGP); Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only); Prior claims on record: 0; All required documents were provided.",
+      "supported_facts": [
+        "Claim type: auto",
+        "Claimed amount: 18,000 EGP",
+        "Incident date: 2026-06-01",
+        "Policy POL-1001 is active",
+        "Claim type is listed on the policy (limit 300,000 EGP)",
+        "Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only)",
+        "Prior claims on record: 0",
+        "All required documents were provided"
+      ],
+      "open_questions": [],
+      "recommended_next_step": "Adjuster to review the evidence and decide."
+    },
+    "created_at": "2026-10-17T01:08:21+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:08:21+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=routine"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0008",
+    "customer_id": "CUST-001",
+    "risk_level": "routine",
+    "case_status": "pending_human_review",
+    "assessment": {
+      "summary": "Auto claim. Claimed amount: 18,000 EGP; Incident date: 2026-06-01; Policy POL-1001 is active; Claim type is listed on the policy (limit 300,000 EGP); Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only); Prior claims on record: 0; All required documents were provided.",
+      "supported_facts": [
+        "Claim type: auto",
+        "Claimed amount: 18,000 EGP",
+        "Incident date: 2026-06-01",
+        "Policy POL-1001 is active",
+        "Claim type is listed on the policy (limit 300,000 EGP)",
+        "Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only)",
+        "Prior claims on record: 0",
+        "All required documents were provided"
+      ],
+      "open_questions": [],
+      "recommended_next_step": "Adjuster to review the evidence and decide."
+    },
+    "created_at": "2026-10-17T01:08:47+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:08:47+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=routine"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0009",
+    "customer_id": "CUST-001",
+    "risk_level": "routine",
+    "case_status": "pending_human_review",
+    "assessment": {
+      "summary": "Auto claim. Claimed amount: 18,000 EGP; Incident date: 2026-06-01; Policy POL-1001 is active; Claim type is listed on the policy (limit 300,000 EGP); Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only); Prior claims on record: 0; All required documents were provided.",
+      "supported_facts": [
+        "Claim type: auto",
+        "Claimed amount: 18,000 EGP",
+        "Incident date: 2026-06-01",
+        "Policy POL-1001 is active",
+        "Claim type is listed on the policy (limit 300,000 EGP)",
+        "Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only)",
+        "Prior claims on record: 0",
+        "All required documents were provided"
+      ],
+      "open_questions": [],
+      "recommended_next_step": "Adjuster to review the evidence and decide."
+    },
+    "created_at": "2026-10-17T01:09:41+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:09:41+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=routine"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0010",
+    "customer_id": "CUST-007",
+    "risk_level": "human_review",
+    "case_status": "needs_more_info",
+    "assessment": {
+      "summary": "Travel claim. Claimed amount: 6,000 EGP; Incident date: 2026-07-10; Policy POL-1007 is active; Claim type is listed on the policy (limit 80,000 EGP); Amount after deductible (750 EGP): 5,250 EGP (arithmetic only). Open items: 2.",
+      "supported_facts": [
+        "Claim type: travel",
+        "Claimed amount: 6,000 EGP",
+        "Incident date: 2026-07-10",
+        "Policy POL-1007 is active",
+        "Claim type is listed on the policy (limit 80,000 EGP)",
+        "Amount after deductible (750 EGP): 5,250 EGP (arithmetic only)"
+      ],
+      "open_questions": [
+        "Could not verify the claim history",
+        "Missing documents: incident_proof, receipts"
+      ],
+      "recommended_next_step": "Adjuster to review the open items and decide."
+    },
+    "created_at": "2026-10-17T01:10:39+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:10:39+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=needs_more_info, risk=human_review"
+      }
+    ]
+  }
+]
