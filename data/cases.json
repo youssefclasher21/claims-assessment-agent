@@ -404,5 +404,90 @@
         "detail": "needs_more_info. needs more info"
       }
     ]
+  },
+  {
+    "case_id": "CASE-0013",
+    "customer_id": "CUST-001",
+    "risk_level": "routine",
+    "case_status": "needs_more_info",
+    "assessment": {
+      "summary": "Auto claim. Claimed amount: 18,000 EGP; Incident date: 2026-06-01; Policy POL-1001 is active; Claim type is listed on the policy (limit 300,000 EGP); Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only); Prior claims on record: 0. Open items: 1.",
+      "supported_facts": [
+        "Claim type: auto",
+        "Claimed amount: 18,000 EGP",
+        "Incident date: 2026-06-01",
+        "Policy POL-1001 is active",
+        "Claim type is listed on the policy (limit 300,000 EGP)",
+        "Amount after deductible (2,500 EGP): 15,500 EGP (arithmetic only)",
+        "Prior claims on record: 0"
+      ],
+      "open_questions": [
+        "Missing documents: repair_estimate, photos_of_damage, driver_license"
+      ],
+      "recommended_next_step": "Adjuster to review the open items and decide."
+    },
+    "created_at": "2026-10-17T11:04:00+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T11:04:00+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=needs_more_info, risk=routine"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0014",
+    "customer_id": "CUST-009",
+    "risk_level": "high",
+    "case_status": "pending_human_review",
+    "assessment": {
+      "route": "human_review",
+      "risk_flags": [
+        "manipulation_attempt"
+      ],
+      "reasons": [
+        "Input contained manipulation language: ['increase my coverage']"
+      ]
+    },
+    "created_at": "2026-10-17T12:50:08+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T12:50:08+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=high"
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0015",
+    "customer_id": "CUST-009",
+    "risk_level": "high",
+    "case_status": "pending_human_review",
+    "assessment": {
+      "route": "human_review",
+      "risk_flags": [
+        "manipulation_attempt"
+      ],
+      "reasons": [
+        "Input contained manipulation language: ['increase my coverage']"
+      ]
+    },
+    "created_at": "2026-10-17T12:50:42+00:00",
+    "final_decision": null,
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T12:50:42+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=high"
+      }
+    ]
   }
 ]
