@@ -45,6 +45,9 @@ _FORBIDDEN_PATTERNS = [
     r"\b(full|complete)\s+(refund|payout|payment|coverage)\b",
     r"\b(approved|rejected)\s+for\s+payment\b",
     r"\bpayout\s+(of|is|will)\b",
+    r"\bpayable\b",
+    r"\bwill\s+be\s+(paid|refunded|reimbursed|compensated)\b",
+    r"\bleaving\s+[$]?\s*[\d,]+(?:\.\d+)?\s*(?:EGP|USD|dollars)?\s+(?:after|payable)\b",
 ]
 _FORBIDDEN_RE = [re.compile(p, re.IGNORECASE) for p in _FORBIDDEN_PATTERNS]
 

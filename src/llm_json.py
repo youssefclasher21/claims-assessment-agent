@@ -1,8 +1,9 @@
 """Structured output for providers whose strict JSON mode is unreliable.
 
 The agent runs WITHOUT output_type; the prompt asks for JSON and Pydantic
-validates it. If the model replies with the JSON schema itself (or invalid
-JSON), the validation error is fed back and the call is retried (max 3 tries).
+validates it. If the model replies with the JSON schema itself, invalid JSON,
+or no usable reply at all (for example a reasoning model that runs out of
+tokens), the call is retried (max 3 tries).
 Provider rate limits (HTTP 429) are retried after the wait the provider asks for."""
 
 from __future__ import annotations
@@ -70,7 +71,17 @@ async def run_structured(agent: Agent, user_input: str, model_cls: type[BaseMode
     )
     last_err = None
     for _ in range(MAX_ATTEMPTS):
-        result = await _run_with_backoff(agent, prompt)
+        try:
+            result = await _run_with_backoff(agent, prompt)
+        except RateLimitError:
+            raise
+        except Exception as exc:  # noqa: BLE001 - e.g. empty reply, finish_reason='length'
+            last_err = exc
+            prompt += (
+                "\n\nYour previous attempt produced no usable reply. "
+                "Think briefly and answer with ONE short JSON object only."
+            )
+            continue
         try:
             return _parse(str(result.final_output), model_cls)
         except (ValueError, ValidationError) as exc:
