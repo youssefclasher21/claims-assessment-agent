@@ -1,9 +1,10 @@
 """Workflow orchestration. Owner: Youssef.
 
 Code-orchestrated steps (deterministic Python): input screening, risk routing,
-parallel gathering, bounded revision loop, case-creation authorization.
-LLM-orchestrated steps (via the injected `steps`): intake, worker evidence,
-writing, evaluating.
+parallel gathering, bounded revision loop, case-creation authorization,
+validation of the LLM orchestrator's worker plan.
+LLM-orchestrated steps (via the injected `steps`): intake, worker plan,
+worker evidence, writing, evaluating.
 
 `steps` is a WorkflowSteps object holding async callables. Real runs inject
 Agents SDK calls; tests inject clearly-labelled MOCK steps. A mock run is NOT
@@ -47,6 +48,7 @@ class WorkflowSteps:
     write: Callable[[ClaimFacts, dict, str | None], Awaitable[CaseSummary]]
     evaluate: Callable[[CaseSummary, dict], Awaitable[EvaluatorVerdict]]
     create_case: Callable[[str, str, str, str], dict]  # tool: customer_id, risk, status, json
+    plan: Callable[[ClaimFacts], Awaitable[Any]] | None = None  # LLM orchestrator (optional)
 
 
 @dataclass
@@ -78,16 +80,35 @@ async def _safe(coro, fallback):
         return fallback
 
 
-async def gather_evidence(customer_id, facts, documents, steps: WorkflowSteps) -> dict:
-    """Parallelization: three independent workers via asyncio.gather."""
+async def _const(value):
+    return value
+
+
+async def gather_evidence(customer_id, facts, documents, steps: WorkflowSteps,
+                          selected: list[str] | None = None) -> dict:
+    """Parallelization: the selected independent workers run via asyncio.gather.
+
+    A worker the orchestrator did not select is marked 'not checked' (unavailable),
+    never reported as a clean/negative finding.
+    """
+    selected = list(selected) if selected else ["policy", "history", "documentation"]
+    skip_note = "not checked: the orchestrator did not select this worker"
+
+    policy_fb = _unavailable(
+        PolicyEvidence, policy_id=None, policy_status=None, is_covered=None,
+        limit_amount=None, deductible=None, amount_after_deductible=None, exclusions=[])
+    history_fb = _unavailable(HistoryEvidence, claim_count=None, claims_summary=[])
+    docs_fb = _unavailable(DocumentEvidence, required=[], provided=[], missing=[])
+
+    def pick(name, make_coro, fallback):
+        if name in selected:
+            return _safe(make_coro(), fallback)
+        return _const(fallback.model_copy(update={"notes": skip_note}))
+
     policy, history, docs = await asyncio.gather(
-        _safe(steps.policy(customer_id, facts), _unavailable(
-            PolicyEvidence, policy_id=None, policy_status=None, is_covered=None,
-            limit_amount=None, deductible=None, amount_after_deductible=None, exclusions=[])),
-        _safe(steps.history(customer_id, facts), _unavailable(
-            HistoryEvidence, claim_count=None, claims_summary=[])),
-        _safe(steps.documents(facts, documents), _unavailable(
-            DocumentEvidence, required=[], provided=[], missing=[])),
+        pick("policy", lambda: steps.policy(customer_id, facts), policy_fb),
+        pick("history", lambda: steps.history(customer_id, facts), history_fb),
+        pick("documentation", lambda: steps.documents(facts, documents), docs_fb),
     )
     return {"policy": policy, "history": history, "documents": docs}
 
@@ -121,8 +142,23 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
         log.append("high-risk path: case created for human review")
         return res
 
-    # 4-5. Parallel evidence workers  [parallelization]
-    res.evidence = await gather_evidence(customer_id, res.facts, documents, steps)
+    # 4. LLM-orchestrated decision: which workers does this claim need?
+    #    The plan is validated by Python (normalize_plan); the LLM never bypasses it.
+    selected = None
+    plan_step = getattr(steps, "plan", None)
+    if plan_step is not None:
+        try:
+            plan = await plan_step(res.facts)
+        except Exception:  # noqa: BLE001 - orchestrator failure falls back to all workers
+            plan = None
+        selected, notes = normalize_plan(plan)
+        reason = plan.reasoning if plan is not None else "n/a"
+        log.append(f"orchestrator(LLM): workers={selected} reason={reason}")
+        for note in notes:
+            log.append(f"orchestrator(Python validation): {note}")
+
+    # 5. Parallel evidence workers  [parallelization]
+    res.evidence = await gather_evidence(customer_id, res.facts, documents, steps, selected)
     log.append("workers: policy/history/documents gathered in parallel")
 
     # Re-run the router with real evidence (still Python)
