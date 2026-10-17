@@ -11,6 +11,8 @@ import os
 
 from agents import Agent, AgentOutputSchema, ModelSettings
 
+from src.guardrails import claim_input_guardrail, claim_output_guardrail
+
 from src.models import (
     CaseSummary,
     ClaimFacts,
@@ -67,6 +69,7 @@ def build_intake_agent() -> Agent:
         model=get_model(),
         model_settings=ModelSettings(temperature=0),
         output_type=out_type(ClaimFacts),
+        input_guardrails=[claim_input_guardrail],
     )
 
 
@@ -126,6 +129,7 @@ def build_claim_writer() -> Agent:
         model=get_model(),
         model_settings=ModelSettings(temperature=0.2, max_tokens=2500),
         output_type=out_type(CaseSummary),
+        output_guardrails=[claim_output_guardrail],
     )
 
 

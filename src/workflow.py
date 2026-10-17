@@ -14,8 +14,11 @@ proof of live SDK execution.
 from __future__ import annotations
 
 import asyncio
+import json
 from dataclasses import dataclass, field
 from typing import Any, Awaitable, Callable
+
+from agents import InputGuardrailTripwireTriggered, OutputGuardrailTripwireTriggered
 
 from src.models import (
     CaseSummary,
@@ -125,6 +128,21 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
     # 2. Intake (LLM) -> structured ClaimFacts  [prompt chaining step 1]
     try:
         res.facts = await steps.intake(claim_text)
+    except InputGuardrailTripwireTriggered:
+        res.route = RiskRoute.HUMAN_REVIEW.value
+        res.blocked_reason = "input guardrail blocked this claim text (manipulation or unauthorized request)"
+        log.append("input_guardrail(SDK): TRIPPED -> claim blocked, escalate to human")
+        try:
+            res.case = steps.create_case(
+                customer_id, "high", "pending_human_review",
+                json.dumps({"blocked_by": "input_guardrail", "note": "claim text blocked before processing"}))
+            if res.case.get("status") == "ok":
+                log.append("blocked path: case created for human review")
+            else:
+                log.append(f"blocked path: case not created ({res.case.get('message')})")
+        except Exception:  # noqa: BLE001
+            log.append("blocked path: case creation failed")
+        return res
     except Exception as exc:  # noqa: BLE001
         res.error = f"intake failed: {exc}"
         res.route = RiskRoute.HUMAN_REVIEW.value
@@ -175,6 +193,24 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
         try:
             res.summary = await steps.write(res.facts, res.evidence, feedback)
             verdict = await steps.evaluate(res.summary, res.evidence)
+        except OutputGuardrailTripwireTriggered:
+            res.summary = None  # the rejected draft is never shown
+            log.append(f"output_guardrail(SDK): TRIPPED, draft rejected (revision {revisions})")
+            if should_continue_revising(revisions, False):
+                revisions += 1
+                feedback = ("The output guardrail rejected the draft because it contained approval, "
+                            "refund or payout wording. Rewrite it using neutral facts only.")
+                continue
+            res.error = "output guardrail rejected every draft"
+            res.route = RiskRoute.HUMAN_REVIEW.value
+            log.append("output_guardrail(SDK): max revisions reached -> escalate to human")
+            try:
+                res.case = steps.create_case(customer_id, "high", "pending_human_review",
+                                             res.risk.model_dump_json())
+                log.append("failure path: case created for human review")
+            except Exception:  # noqa: BLE001
+                log.append("failure path: case creation failed")
+            return res
         except Exception as exc:  # noqa: BLE001 - model failure must not crash the workflow
             res.error = f"writer/evaluator failed: {exc}"
             res.route = RiskRoute.HUMAN_REVIEW.value

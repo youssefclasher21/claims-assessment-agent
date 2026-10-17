@@ -12,7 +12,12 @@ import asyncio
 import json
 import re
 
-from agents import Agent, Runner
+from agents import (
+    Agent,
+    InputGuardrailTripwireTriggered,
+    OutputGuardrailTripwireTriggered,
+    Runner,
+)
 from openai import RateLimitError
 from pydantic import BaseModel, ValidationError
 
@@ -73,7 +78,8 @@ async def run_structured(agent: Agent, user_input: str, model_cls: type[BaseMode
     for _ in range(MAX_ATTEMPTS):
         try:
             result = await _run_with_backoff(agent, prompt)
-        except RateLimitError:
+        except (RateLimitError, InputGuardrailTripwireTriggered,
+                OutputGuardrailTripwireTriggered):
             raise
         except Exception as exc:  # noqa: BLE001 - e.g. empty reply, finish_reason='length'
             last_err = exc

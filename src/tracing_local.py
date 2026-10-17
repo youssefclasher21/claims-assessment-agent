@@ -41,7 +41,7 @@ class LocalTraceProcessor(TracingProcessor):
         except Exception:  # noqa: BLE001 - tracing must never break the workflow
             return
         kind = data.get("type", "other")
-        if kind not in ("agent", "function", "generation"):
+        if kind not in ("agent", "function", "generation", "guardrail"):
             return
         record = {
             "kind": kind,
@@ -51,6 +51,8 @@ class LocalTraceProcessor(TracingProcessor):
         }
         if kind == "function":
             record["detail"] = _short(data.get("output"))
+        elif kind == "guardrail":
+            record["detail"] = "triggered=" + str(data.get("triggered"))
         with self._lock:
             self.spans.append(record)
 
@@ -71,7 +73,7 @@ class LocalTraceProcessor(TracingProcessor):
         with self._lock:
             spans = sorted(self.spans, key=lambda s: s["started_at"])
             workflows = list(self.workflows)
-        label = {"agent": "AGENT", "function": "TOOL ", "generation": "LLM  "}
+        label = {"agent": "AGENT", "function": "TOOL ", "generation": "LLM  ", "guardrail": "GUARD"}
         lines = [f"workflow: {', '.join(workflows) or '(none)'}"]
         for s in spans:
             err = "  [ERROR]" if s["error"] else ""
@@ -80,7 +82,8 @@ class LocalTraceProcessor(TracingProcessor):
         lines.append(
             f"summary: {sum(s['kind'] == 'agent' for s in spans)} agent spans, "
             f"{sum(s['kind'] == 'function' for s in spans)} tool calls, "
-            f"{sum(s['kind'] == 'generation' for s in spans)} model calls"
+            f"{sum(s['kind'] == 'generation' for s in spans)} model calls, "
+            f"{sum(s['kind'] == 'guardrail' for s in spans)} guardrail checks"
         )
         return "\n".join(lines)
 
