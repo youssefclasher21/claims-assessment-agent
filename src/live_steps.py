@@ -6,6 +6,9 @@ from src/tools.py are given to the three workers. `create_claim_case` is NOT
 given to any LLM: it is passed to the workflow as a plain Python function, and
 it enforces src/rules.py authorization itself.
 
+The LLM provider (OpenAI / Groq / Gemini) is configured from .env through
+src/llm_config.py.
+
 Run a one-claim smoke test (writes to a temp cases file, not data/cases.json):
 
     python -m src.live_steps CUST-001 "My car was hit yesterday, repair cost 12000 EGP" police_report.pdf
@@ -23,9 +26,6 @@ import tempfile
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from src.llm_config import configure_llm
-from src.llm_json import run_structured
-
 from src.claim_agents import (
     build_claim_writer,
     build_documentation_worker,
@@ -34,6 +34,8 @@ from src.claim_agents import (
     build_intake_agent,
     build_policy_worker,
 )
+from src.llm_config import configure_llm
+from src.llm_json import run_structured
 from src.models import (
     CaseSummary,
     ClaimFacts,
@@ -42,15 +44,16 @@ from src.models import (
     HistoryEvidence,
     PolicyEvidence,
 )
+from src.orchestration import WorkerPlan, build_plan_agent
 from src.tools import build_agent_tools, create_claim_case
 from src.workflow import WorkflowSteps
 
-# Read OPENAI_API_KEY (and OPENAI_MODEL, MAX_REVISIONS) from the .env file.
+# Read provider settings (LLM_PROVIDER, API key, OPENAI_MODEL, MAX_REVISIONS) from .env.
 load_dotenv()
 
 
 class MissingApiKeyError(RuntimeError):
-    """OPENAI_API_KEY is not available to the process."""
+    """The API key for the configured provider is not available to the process."""
 
 
 def require_api_key() -> str:
@@ -87,6 +90,7 @@ def build_live_steps() -> WorkflowSteps:
 
     tools = build_agent_tools()
     intake_agent = build_intake_agent()
+    plan_agent = build_plan_agent()
     policy_worker = build_policy_worker(tools["policy"])
     history_worker = build_history_worker(tools["history"])
     docs_worker = build_documentation_worker(tools["documents"])
@@ -103,6 +107,10 @@ def build_live_steps() -> WorkflowSteps:
             f"<claim_text>\n{safe_text}\n</claim_text>"
         )
         return await _run(intake_agent, text, ClaimFacts)
+
+    async def plan(facts: ClaimFacts) -> WorkerPlan:
+        text = "Choose the workers for this claim.\n\n" + _payload(claim_facts=facts)
+        return await _run(plan_agent, text, WorkerPlan)
 
     async def policy(customer_id: str, facts: ClaimFacts) -> PolicyEvidence:
         text = (
@@ -155,6 +163,7 @@ def build_live_steps() -> WorkflowSteps:
         write=write,
         evaluate=evaluate,
         create_case=create_claim_case,  # plain Python call, never an LLM tool
+        plan=plan,  # LLM-orchestrated: which workers does this claim need?
     )
 
 

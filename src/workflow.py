@@ -27,6 +27,7 @@ from src.models import (
     RiskRoute,
     ToolStatus,
 )
+from src.orchestration import normalize_plan
 from src.rules import (
     detect_manipulation,
     find_forbidden_language,
