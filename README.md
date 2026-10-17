@@ -13,6 +13,7 @@ python -m venv .venv
 pip install -r requirements.txt
 copy .env.example .env   # then fill OPENAI_API_KEY (never commit .env)
 python -m pytest -v
+ python -m ui.app
 ```
 
 ## Code-orchestrated vs LLM-orchestrated
