@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import os
 
-from agents import Agent, ModelSettings
+from agents import Agent, AgentOutputSchema, ModelSettings
 
 from src.models import (
     CaseSummary,
@@ -21,8 +21,28 @@ from src.models import (
 )
 
 
-def get_model() -> str:
-    return os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
+def _is_openai() -> bool:
+    return os.getenv("LLM_PROVIDER", "openai").strip().lower() == "openai"
+
+
+def get_model():
+    name = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
+    if _is_openai():
+        return name
+    # Non-OpenAI provider: pass an explicit model object so the SDK does not
+    # strip a provider prefix such as "openai/" from names like openai/gpt-oss-120b.
+    from agents import OpenAIChatCompletionsModel
+    from agents.models import _openai_shared
+
+    client = _openai_shared.get_default_openai_client()
+    return OpenAIChatCompletionsModel(model=name, openai_client=client)
+
+
+def out_type(model_cls):
+    """OpenAI: strict structured output. Other providers: None (see llm_json.run_structured)."""
+    if _is_openai():
+        return model_cls
+    return None
 
 
 _DATA_RULE = (
@@ -44,7 +64,7 @@ def build_intake_agent() -> Agent:
         ),
         model=get_model(),
         model_settings=ModelSettings(temperature=0),
-        output_type=ClaimFacts,
+        output_type=out_type(ClaimFacts),
     )
 
 
@@ -59,7 +79,7 @@ def build_policy_worker(tools: list | None = None) -> Agent:
         model=get_model(),
         model_settings=ModelSettings(temperature=0),
         tools=tools or [],
-        output_type=PolicyEvidence,
+        output_type=out_type(PolicyEvidence),
     )
 
 
@@ -73,7 +93,7 @@ def build_history_worker(tools: list | None = None) -> Agent:
         model=get_model(),
         model_settings=ModelSettings(temperature=0),
         tools=tools or [],
-        output_type=HistoryEvidence,
+        output_type=out_type(HistoryEvidence),
     )
 
 
@@ -87,7 +107,7 @@ def build_documentation_worker(tools: list | None = None) -> Agent:
         model=get_model(),
         model_settings=ModelSettings(temperature=0),
         tools=tools or [],
-        output_type=DocumentEvidence,
+        output_type=out_type(DocumentEvidence),
     )
 
 
@@ -103,7 +123,7 @@ def build_claim_writer() -> Agent:
         ),
         model=get_model(),
         model_settings=ModelSettings(temperature=0.2),
-        output_type=CaseSummary,
+        output_type=out_type(CaseSummary),
     )
 
 
@@ -118,7 +138,7 @@ def build_evaluator() -> Agent:
         ),
         model=get_model(),
         model_settings=ModelSettings(temperature=0),
-        output_type=EvaluatorVerdict,
+        output_type=out_type(EvaluatorVerdict),
     )
 
 
