@@ -2,7 +2,9 @@
 
 Default is OpenAI. For a free provider set LLM_PROVIDER=gemini or groq in .env.
 Non-OpenAI providers use the chat-completions API and cannot export traces to
-OpenAI, so SDK trace export is disabled for them (never silently claimed).
+OpenAI. For them the SDK's default exporter is replaced by our local trace
+collector (src/tracing_local.py): traces are real but visible locally only,
+never claimed to be on the OpenAI dashboard.
 """
 
 from __future__ import annotations
@@ -17,9 +19,12 @@ PROVIDERS = {
     "groq": ("https://api.groq.com/openai/v1", "GROQ_API_KEY"),
 }
 
+_LOCAL_TRACER_ADDED = False
+
 
 def configure_llm() -> str:
     """Load .env and configure the Agents SDK client. Returns provider name."""
+    global _LOCAL_TRACER_ADDED
     load_dotenv()
     provider = os.getenv("LLM_PROVIDER", "openai").strip().lower()
     if provider not in PROVIDERS:
@@ -29,13 +34,21 @@ def configure_llm() -> str:
     if not key:
         raise RuntimeError(f"{key_env} is not set in .env")
 
+    from agents import set_tracing_disabled
+    from agents.tracing import add_trace_processor, set_trace_processors
+
+    from src.tracing_local import LOCAL_TRACER
+
     if provider != "openai":
-        from agents import (set_default_openai_api, set_default_openai_client,
-                            set_tracing_disabled)
+        from agents import set_default_openai_api, set_default_openai_client
         from openai import AsyncOpenAI
 
         client = AsyncOpenAI(base_url=base_url, api_key=key)
         set_default_openai_client(client, use_for_tracing=False)
         set_default_openai_api("chat_completions")
-        set_tracing_disabled(True)
+        set_tracing_disabled(False)
+        set_trace_processors([LOCAL_TRACER])  # replaces the OpenAI exporter
+    elif not _LOCAL_TRACER_ADDED:
+        add_trace_processor(LOCAL_TRACER)  # keep OpenAI export and add the local copy
+        _LOCAL_TRACER_ADDED = True
     return provider

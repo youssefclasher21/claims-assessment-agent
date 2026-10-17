@@ -169,13 +169,21 @@ def build_live_steps() -> WorkflowSteps:
 
 # ------------------------------------------------------------------ smoke test
 async def _demo(customer_id: str, claim_text: str, docs: list[str]) -> None:
+    from agents import trace
+
+    from src.tracing_local import LOCAL_TRACER
     from src.workflow import run_claim
 
     # Keep the smoke test away from the real data/cases.json.
     os.environ.setdefault(
         "CLAIMS_CASES_FILE", os.path.join(tempfile.gettempdir(), "live_steps_cases.json")
     )
-    res = await run_claim(customer_id, claim_text, docs, build_live_steps())
+
+    steps = build_live_steps()  # configures the provider and the trace processor first
+    LOCAL_TRACER.reset()
+    with trace("Claim assessment workflow"):
+        res = await run_claim(customer_id, claim_text, docs, steps)
+
     print("\n".join(res.stage_log))
     print("route:", res.route)
     if res.summary:
@@ -184,6 +192,8 @@ async def _demo(customer_id: str, claim_text: str, docs: list[str]) -> None:
     print("case:", res.case)
     if res.error:
         print("error:", res.error)
+    print("\n--- TRACE ---")
+    print(LOCAL_TRACER.format())
 
 
 if __name__ == "__main__":

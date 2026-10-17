@@ -172,8 +172,14 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
     verdict = None
     revisions = 0
     while True:
-        res.summary = await steps.write(res.facts, res.evidence, feedback)
-        verdict = await steps.evaluate(res.summary, res.evidence)
+        try:
+            res.summary = await steps.write(res.facts, res.evidence, feedback)
+            verdict = await steps.evaluate(res.summary, res.evidence)
+        except Exception as exc:  # noqa: BLE001 - model failure must not crash the workflow
+            res.error = f"writer/evaluator failed: {exc}"
+            res.route = RiskRoute.HUMAN_REVIEW.value
+            log.append("writer/evaluator: FAILED -> escalate to human")
+            return res
         code_issues = find_forbidden_language(res.summary.summary + " " + res.summary.recommended_next_step)
         is_valid = verdict.is_valid and not code_issues
         log.append(f"evaluator: valid={is_valid} (revision {revisions})")
