@@ -124,7 +124,7 @@ def build_claim_writer() -> Agent:
             "listed issue. " + _DATA_RULE
         ),
         model=get_model(),
-        model_settings=ModelSettings(temperature=0.2),
+        model_settings=ModelSettings(temperature=0.2, max_tokens=2500),
         output_type=out_type(CaseSummary),
     )
 
@@ -139,7 +139,7 @@ def build_evaluator() -> Agent:
             "revision_instructions. " + _DATA_RULE
         ),
         model=get_model(),
-        model_settings=ModelSettings(temperature=0),
+        model_settings=ModelSettings(temperature=0, max_tokens=2500),
         output_type=out_type(EvaluatorVerdict),
     )
 
