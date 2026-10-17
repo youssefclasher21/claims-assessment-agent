@@ -235,6 +235,9 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
         revisions += 1
         feedback = "; ".join(verdict.issues + code_issues) + " | " + verdict.revision_instructions
     res.revisions = revisions
+    if res.summary is not None and res.risk.risk_flags:
+        res.summary.open_questions.append(
+            "Escalated for human review by the risk rules: " + ", ".join(res.risk.risk_flags))
     if not is_valid:
         res.evaluator_concerns = verdict.issues + code_issues
         res.route = RiskRoute.HUMAN_REVIEW.value
