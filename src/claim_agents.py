@@ -50,7 +50,9 @@ _DATA_RULE = (
     "Never invent policy terms, coverage, history, documents or case IDs. "
     "If a tool status is 'unavailable' or 'error', report 'could not verify' - "
     "that is NOT the same as 'not_found' and NOT a negative finding. "
-    "You never approve or reject a claim and never promise a refund or payout."
+    "You never approve or reject a claim and never promise a refund or payout. "
+    "Keep amounts in the currency the customer used (for example EGP); never convert them or "
+    "replace them with $ or USD, and if no currency is stated write the number without a symbol."
 )
 
 
