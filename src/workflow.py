@@ -147,6 +147,14 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
         res.error = f"intake failed: {exc}"
         res.route = RiskRoute.HUMAN_REVIEW.value
         log.append("intake: FAILED -> escalate to human")
+        try:
+            res.case = steps.create_case(
+                customer_id, "high", "pending_human_review",
+                json.dumps({"blocked_by": "intake_failure",
+                            "note": "intake step failed; claim needs manual handling"}))
+            log.append("failure path: case created for human review")
+        except Exception:  # noqa: BLE001
+            log.append("failure path: case creation failed")
         return res
     log.append("intake: ok")
 
