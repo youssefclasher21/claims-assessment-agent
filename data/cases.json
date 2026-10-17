@@ -328,5 +328,81 @@
         "detail": "status=needs_more_info, risk=human_review"
       }
     ]
+  },
+  {
+    "case_id": "CASE-0011",
+    "customer_id": "CUST-003",
+    "risk_level": "human_review",
+    "case_status": "closed_by_adjuster",
+    "assessment": {
+      "summary": "Property claim. Claimed amount: 20,000 EGP; Incident date: 2026-09-10; Policy POL-1003 is active; Claim type is listed on the policy (limit 500,000 EGP); Amount after deductible (5,000 EGP): 15,000 EGP (arithmetic only); Prior claims on record: 4; All required documents were provided.",
+      "supported_facts": [
+        "Claim type: property",
+        "Claimed amount: 20,000 EGP",
+        "Incident date: 2026-09-10",
+        "Policy POL-1003 is active",
+        "Claim type is listed on the policy (limit 500,000 EGP)",
+        "Amount after deductible (5,000 EGP): 15,000 EGP (arithmetic only)",
+        "Prior claims on record: 4",
+        "All required documents were provided"
+      ],
+      "open_questions": [],
+      "recommended_next_step": "Adjuster to review the evidence and decide."
+    },
+    "created_at": "2026-10-17T01:39:17+00:00",
+    "final_decision": "approved",
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:39:17+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=pending_human_review, risk=human_review"
+      },
+      {
+        "timestamp": "2026-10-17T01:40:06+00:00",
+        "actor": "human_adjuster:samir hanna",
+        "event": "human_decision",
+        "detail": "approved."
+      }
+    ]
+  },
+  {
+    "case_id": "CASE-0012",
+    "customer_id": "CUST-002",
+    "risk_level": "routine",
+    "case_status": "needs_more_info",
+    "assessment": {
+      "summary": "Health claim. Policy POL-1002 is active; Claim type is listed on the policy (limit 150,000 EGP); Prior claims on record: 1. Open items: 3.",
+      "supported_facts": [
+        "Claim type: health",
+        "Policy POL-1002 is active",
+        "Claim type is listed on the policy (limit 150,000 EGP)",
+        "Prior claims on record: 1"
+      ],
+      "open_questions": [
+        "Missing from claim text: claim_amount",
+        "Missing from claim text: incident_date",
+        "Missing documents: medical_report, hospital_invoice, prescription"
+      ],
+      "recommended_next_step": "Adjuster to review the open items and decide."
+    },
+    "created_at": "2026-10-17T01:40:29+00:00",
+    "final_decision": "needs_more_info",
+    "decision_owner": "human_adjuster",
+    "audit_trail": [
+      {
+        "timestamp": "2026-10-17T01:40:29+00:00",
+        "actor": "claims_agent",
+        "event": "case_created",
+        "detail": "status=needs_more_info, risk=routine"
+      },
+      {
+        "timestamp": "2026-10-17T01:42:50+00:00",
+        "actor": "human_adjuster:samir hanna",
+        "event": "human_decision",
+        "detail": "needs_more_info. needs more info"
+      }
+    ]
   }
 ]
