@@ -244,8 +244,7 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
         log.append(f"max revisions ({get_max_revisions()}) reached -> escalate with concerns")
 
     # 7. Protected action (authorization enforced inside the tool via rules.py)
-    status = "needs_more_info" if (res.facts.missing_fields or
-                                   res.evidence["documents"].missing) else "pending_human_review"
+    status = ("pending_human_review" if res.route == RiskRoute.HUMAN_REVIEW.value else "needs_more_info" if (res.facts.missing_fields or res.evidence["documents"].missing) else "pending_human_review")
     res.case = steps.create_case(customer_id, res.route, status, res.summary.model_dump_json())
     if res.case.get("status") != "ok":
         res.blocked_reason = res.case.get("message")
