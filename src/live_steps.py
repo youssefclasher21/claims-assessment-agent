@@ -80,6 +80,16 @@ def _payload(**sections) -> str:
     return json.dumps(_jsonable(sections), ensure_ascii=False, indent=2)
 
 
+def _writer_evidence(evidence):
+    """Evidence for the Claim Writer: drop the net-after-deductible figure so the
+    writer cannot restate it as a payable amount (Python decides what it may see)."""
+    data = _jsonable(evidence)
+    policy = data.get("policy") if isinstance(data, dict) else None
+    if isinstance(policy, dict):
+        policy.pop("amount_after_deductible", None)
+    return data
+
+
 async def _run(agent, text: str, output_type):
     return await run_structured(agent, text, output_type)
 
@@ -144,7 +154,7 @@ def build_live_steps() -> WorkflowSteps:
     async def write(facts: ClaimFacts, evidence: dict, feedback: str | None) -> CaseSummary:
         text = (
             "Write the case summary for the human adjuster.\n\n"
-            + _payload(claim_facts=facts, evidence=evidence, evaluator_feedback=feedback)
+            + _payload(claim_facts=facts, evidence=_writer_evidence(evidence), evaluator_feedback=feedback)
         )
         return await _run(writer, text, CaseSummary)
 

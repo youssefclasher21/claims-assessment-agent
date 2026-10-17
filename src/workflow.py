@@ -193,13 +193,17 @@ async def run_claim(customer_id: str, claim_text: str, documents: list[str],
         try:
             res.summary = await steps.write(res.facts, res.evidence, feedback)
             verdict = await steps.evaluate(res.summary, res.evidence)
-        except OutputGuardrailTripwireTriggered:
+        except OutputGuardrailTripwireTriggered as exc:
             res.summary = None  # the rejected draft is never shown
+            _gr = getattr(getattr(exc, "guardrail_result", None), "output", None)
+            log.append(f"output_guardrail hits: {getattr(_gr, 'output_info', None)}")
             log.append(f"output_guardrail(SDK): TRIPPED, draft rejected (revision {revisions})")
             if should_continue_revising(revisions, False):
                 revisions += 1
                 feedback = ("The output guardrail rejected the draft because it contained approval, "
-                            "refund or payout wording. Rewrite it using neutral facts only.")
+                            "refund or payout wording. Rewrite it using neutral facts only. "
+                            f"Rejected phrases: {getattr(_gr, 'output_info', None)}. "
+                            "Do not state any amount remaining after the deductible.")
                 continue
             res.error = "output guardrail rejected every draft"
             res.route = RiskRoute.HUMAN_REVIEW.value

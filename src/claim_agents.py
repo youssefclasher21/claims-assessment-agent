@@ -124,7 +124,9 @@ def build_claim_writer() -> Agent:
             "from the provided claim facts and evidence. Put anything unverified in "
             "open_questions. recommended_next_step must be an action for the adjuster, never an "
             "approval, rejection or payout promise. If you receive evaluator feedback, fix every "
-            "listed issue. " + _DATA_RULE
+            "listed issue. State the deductible amount only; never state a remaining, net or "
+            "after-deductible amount and never use the words payable, leaving, owed or payout. "
+            + _DATA_RULE
         ),
         model=get_model(),
         model_settings=ModelSettings(temperature=0.2, max_tokens=2500),
