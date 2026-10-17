@@ -23,7 +23,8 @@ import tempfile
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from agents import Runner
+from src.llm_config import configure_llm
+from src.llm_json import run_structured
 
 from src.claim_agents import (
     build_claim_writer,
@@ -52,14 +53,12 @@ class MissingApiKeyError(RuntimeError):
     """OPENAI_API_KEY is not available to the process."""
 
 
-def require_api_key() -> None:
-    """Fail early with a clear message instead of a confusing 401 later."""
-    key = os.getenv("OPENAI_API_KEY", "").strip()
-    if not key:
-        raise MissingApiKeyError(
-            "OPENAI_API_KEY is not set. Create a .env file in the project root "
-            "with the line OPENAI_API_KEY=sk-... (see .env.example) and restart."
-        )
+def require_api_key() -> str:
+    """Configure the LLM provider from .env and fail early with a clear message."""
+    try:
+        return configure_llm()
+    except RuntimeError as exc:
+        raise MissingApiKeyError(str(exc)) from exc
 
 
 # ------------------------------------------------------------------ helpers
@@ -79,8 +78,7 @@ def _payload(**sections) -> str:
 
 
 async def _run(agent, text: str, output_type):
-    result = await Runner.run(agent, text)
-    return result.final_output_as(output_type, raise_if_incorrect_type=True)
+    return await run_structured(agent, text, output_type)
 
 
 # ------------------------------------------------------------------ factory
